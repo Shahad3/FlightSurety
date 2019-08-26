@@ -95,6 +95,7 @@ contract FlightSuretyApp {
 
     function isOperational() 
                             public 
+                            view
                             returns(bool) 
     {
         return FSData.isOperational();  // Modify to call data contract's status
@@ -111,9 +112,9 @@ contract FlightSuretyApp {
     */   
     function registerAirline
                             (
-                                string _name,
+                                string memory _name,
                                 address _naAdress                            )
-                            external
+                            public
     {
         FSData.registerAirline(_name, _naAdress);
     }
@@ -129,11 +130,11 @@ contract FlightSuretyApp {
          FSData.voteToRegisterAirline(_airLineAddress);
      }
 
-     function isAirline(address _airlineAddress) external returns (bool){
+     function isAirline(address _airlineAddress) external view returns (bool){
          return FSData.isAirline(_airlineAddress);
      }
     
-    function getAirline(address _airlineAddress) external returns(bool, string memory, bool, bool, uint){
+    function getAirline(address _airlineAddress) external view returns(bool, string memory, bool, bool, uint){
         return FSData.getAirline(_airlineAddress);
          }
 
@@ -142,8 +143,8 @@ contract FlightSuretyApp {
     *
     */  
     function registerFlight
-                                (uint256 _updatedTimestamp, string flightNamuber, address _airlineAddress)
-                                external payable
+                                (uint256 _updatedTimestamp, string memory flightNamuber, address _airlineAddress)
+                                public payable
                                 
     {
         FSData.registerFlight(_updatedTimestamp, flightNamuber, _airlineAddress);
@@ -156,7 +157,7 @@ contract FlightSuretyApp {
     function processFlightStatus
                                 (
                                     address _airline,
-                                    string _flight,
+                                    string memory _flight,
                                     uint256 _timestamp,
                                     uint8 _statusCode
                                 )
@@ -171,10 +172,10 @@ contract FlightSuretyApp {
     function fetchFlightStatus
                         (
                             address airline,
-                            string flight,
+                            string memory flight,
                             uint256 timestamp                            
                         )
-                        external
+                        public
     {
         uint8 index = getRandomIndex(msg.sender);
 
@@ -246,7 +247,7 @@ contract FlightSuretyApp {
         uint8[3] memory indexes = generateIndexes(msg.sender);
 
         oracles[msg.sender] = Oracle({
-                                        isRegistered: true,
+                                        isRegistered:true,
                                         indexes: indexes
                                     });
     }
@@ -274,11 +275,11 @@ contract FlightSuretyApp {
                         (
                             uint8 index,
                             address airline,
-                            string flight,
+                            string memory flight,
                             uint256 timestamp,
                             uint8 statusCode
                         )
-                        external
+                        public
     {
         require((oracles[msg.sender].indexes[0] == index) || (oracles[msg.sender].indexes[1] == index) || (oracles[msg.sender].indexes[2] == index), "Index does not match oracle request");
 
@@ -307,8 +308,8 @@ contract FlightSuretyApp {
                             string memory flight,
                             uint256 timestamp
                         )
-                        pure
                         internal
+                        pure
                         returns(bytes32) 
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));

@@ -38,6 +38,9 @@ contract('Oracles', async (accounts) => {
     // ARRANGE
     let flight = 'ND1309'; // Course number
     let timestamp = Math.floor(Date.now() / 1000);
+    const price = web3.utils.toWei('2', "ether")
+
+    await config.flightSuretyData.registerFlight(timestamp, flight, config.firstAirline, {from: config.testAddresses[2], value:price});
 
     // Submit a request for oracles to get status information for a flight
     await config.flightSuretyApp.fetchFlightStatus(config.firstAirline, flight, timestamp);
@@ -60,6 +63,7 @@ contract('Oracles', async (accounts) => {
         }
         catch(e) {
           // Enable this when debugging
+          
            console.log('\nError + ', oracleIndexes[idx], config.firstAirline, flight, timestamp, e.message , " || ", idx, oracleIndexes[idx].toNumber(), flight, timestamp);
         }
 

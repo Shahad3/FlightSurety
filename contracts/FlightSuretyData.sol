@@ -135,8 +135,8 @@ contract FlightSuretyData {
     *      Can only be called from FlightSuretyApp contract
     *
     */   
-    function registerAirline (string _name, address _newAirlineAddress)
-                            external
+    function registerAirline (string memory _name, address _newAirlineAddress)
+                            public
     {
         if(airlineCount<=4){
             require(idToAirline[msg.sender].participate, "Only registered and funded Airlines can registed new airline.");
@@ -149,20 +149,20 @@ contract FlightSuretyData {
         // idToAirline[msg.sender] = newAirline;
     }
 
-    function isAirline(address _airlineAddress) external returns (bool){
+    function isAirline(address _airlineAddress) external view returns (bool){
         return idToAirline[_airlineAddress].exist;
     }
 
-    function getAirline(address _airlineAddress) external returns(bool, string memory, bool, bool, uint){
+    function getAirline(address _airlineAddress) external view returns(bool, string memory, bool, bool, uint){
         return(idToAirline[_airlineAddress].exist, idToAirline[_airlineAddress].name, idToAirline[_airlineAddress].participate, idToAirline[_airlineAddress].approved, idToAirline[_airlineAddress].votes);
     }
-    function getOwner() external returns(address){
+    function getOwner() external view returns(address){
         return contractOwner;
     }
 
     //---************* Flights function **********************----///
 
-   function registerFlight (uint256 _updatedTimestamp, string flightNamuber, address _airlineAddress) external payable {
+   function registerFlight (uint256 _updatedTimestamp, string memory flightNamuber, address _airlineAddress) public payable {
        require(msg.value > 1 ether, "Insurance should be at least one ether");
        bytes32 key = getFlightKey(_airlineAddress, flightNamuber, _updatedTimestamp);
        flights[key] = Flight(true, 10, _updatedTimestamp, _airlineAddress, msg.value);
@@ -170,11 +170,11 @@ contract FlightSuretyData {
 
     function processFlightStatus(
                                     address airline,
-                                    string flight,
+                                    string memory flight,
                                     uint256 timestamp,
                                     uint8 _statusCode
                                 )
-                                external
+                                public
                 {
                     bytes32 key = getFlightKey(airline, flight, timestamp);
                     require(flights[key].isRegistered, "This flight is not registered.");
@@ -214,10 +214,10 @@ contract FlightSuretyData {
     function pay
                             (
                                 address airline,
-                                string flight,
+                                string memory flight,
                                 uint256 timestamp 
                             )
-                            external
+                            public
                             payable
     {
         bytes32 key = getFlightKey(airline, flight, timestamp);
@@ -257,7 +257,7 @@ contract FlightSuretyData {
     function getFlightKey
                         (
                             address airline,
-                            string flight,
+                            string memory flight,
                             uint256 timestamp
                         )
                         pure
@@ -273,7 +273,7 @@ contract FlightSuretyData {
     */
     function() 
                             external 
-                            payable 
+                             
     {
         // fund();
     }
